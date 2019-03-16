@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 
-class VoucherEditorView extends Component {
+class VoucherEditor extends Component {
 	state = {
 		campaign: "",
-		cade: "",
+		code: "",
 		start: "",
 		end: "",
 		value: 0,
@@ -14,7 +14,37 @@ class VoucherEditorView extends Component {
 	}
 	handleSubmit = event => {
 		event.preventDefault()
-		console.log(this.state)
+		const message = this.validateSubmit()
+
+		if(message.length > 0){
+			alert(message)
+
+		} else {
+			console.log(this.state)
+		}
+	}
+
+	validateSubmit(){
+		const {campaign, code, start, end, value} = this.state
+
+		let message = ""
+
+		if( campaign === "") {
+			message += "- Campain name is required!\n"
+		}
+		if( code === "") {
+			message += "- Promotional code is required!\n"
+		}
+		if( start === "") {
+			message += "- Start date is required!\n"
+		}
+		if( end === "") {
+			message += "- End date name is required!\n"
+		}
+		if( value === 0) {
+			message += "- Discount value is required!\n"
+		}
+		return message
 	}
 
 	onChangeTextInput = event => {
@@ -124,7 +154,8 @@ class VoucherEditorView extends Component {
 							name="value"
 							type="number"
 							value={this.state.value} 
-							onChange={this.onChangeTextInput}/>
+							onChange={this.onChangeTextInput}
+							min="0"/>
 					</div>
 					<div className="select-container">
 						<select 
@@ -180,7 +211,8 @@ class VoucherEditorView extends Component {
 							name="maxTimes"
 							type="number"
 							value={this.state.maxTimes} 
-							onChange={this.onChangeTextInput}/>
+							onChange={this.onChangeTextInput}
+							min="0"/>
 					</div>
 					<div className="number input-container">
 						<span>Max per user:</span>
@@ -188,7 +220,8 @@ class VoucherEditorView extends Component {
 							name="timesByUser"
 							type="number"
 							value={this.state.timesByUser} 
-							onChange={this.onChangeTextInput}/>
+							onChange={this.onChangeTextInput}
+							min="0"/>
 					</div>
 				</div>
 				<div className="button-container">
@@ -199,4 +232,4 @@ class VoucherEditorView extends Component {
 	}
 }
 
-export default VoucherEditorView
+export default VoucherEditor
