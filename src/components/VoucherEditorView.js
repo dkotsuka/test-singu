@@ -4,16 +4,17 @@ class VoucherEditorView extends Component {
 	state = {
 		campaign: "",
 		cade: "",
-		start: new Date().toISOString(),
-		end: new Date().toISOString(),
+		start: "",
+		end: "",
 		value: 0,
 		type: "P",
 		maxTimes: 0,
 		timesByUser: 0,
 		services: []
 	}
-	handleSubmit = () => {
-
+	handleSubmit = event => {
+		event.preventDefault()
+		console.log(this.state)
 	}
 
 	onChangeTextInput = event => {
@@ -39,6 +40,32 @@ class VoucherEditorView extends Component {
 				return { services: newState };
 			});
 	    }
+	}
+
+	onChangeStartDateInput = event => {
+		const target = event.target;
+		const start = target.value;
+		const name = target.name;
+		const end = this.state.end
+
+		if(start < end || !end) {
+			this.setState({	[name]: start });
+		}else {
+			alert("Start date can not be after closure.")
+		}
+	}
+
+	onChangeEndDateInput = event => {
+		const target = event.target;
+		const end = target.value;
+		const name = target.name;
+		const start = this.state.start
+
+		if(start < end || !start) {
+			this.setState({	[name]: end });
+		}else {
+			alert("Start date can not be after closure.")
+		}
 	}
 
 	serviceIsChecked = (service) => {
@@ -79,7 +106,7 @@ class VoucherEditorView extends Component {
 							name="start"
 							type="date"
 							value={this.state.start} 
-							onChange={this.onChangeTextInput}/>
+							onChange={this.onChangeStartDateInput}/>
 					</div>
 					<div className="number input-container">
 						<span>End date:</span>
@@ -87,7 +114,7 @@ class VoucherEditorView extends Component {
 							name="end"
 							type="date"
 							value={this.state.end} 
-							onChange={this.onChangeTextInput}/>
+							onChange={this.onChangeEndDateInput}/>
 					</div>
 				</div>
 				<div className="row-container">
@@ -163,6 +190,9 @@ class VoucherEditorView extends Component {
 							value={this.state.timesByUser} 
 							onChange={this.onChangeTextInput}/>
 					</div>
+				</div>
+				<div className="button-container">
+					<button>Submit</button>
 				</div>
 			</form>		
 		</div>

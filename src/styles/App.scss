@@ -4,7 +4,6 @@
 .editor-container {
   display: flex;
   justify-content: center;
-  height: 100%;
 
   form {
     margin: 15px;
@@ -72,6 +71,17 @@
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      button {
+        margin: 5px;
+        height: 32px;
+        width: 200px;
+        text-transform: uppercase;
+      }
     }
   }
 }
