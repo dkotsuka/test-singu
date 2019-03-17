@@ -23,6 +23,12 @@ class VoucherTable extends Component {
 		this.setState({ search: value, selected: "" })
 	}
 
+// --- set select input filter
+	onChangeFilter = (e) => {
+		const value = e.target.value
+		this.setState({ filterBy: value, selected: "" })
+	}
+
 // --- page navigation functions
 	toFirstPage = () => {
 		this.setState({ actualPage: 0, selected: "" })
@@ -49,21 +55,31 @@ class VoucherTable extends Component {
 	render(){
 		
 		const vouchers = this.props.vouchers
-		const filtered = vouchers.filter((voucher) => voucher["code"].includes(this.state.search))
+		const filterByStatus = vouchers.filter((voucher) => voucher["status"].includes(this.state.filterBy))
+		const filterByCode = filterByStatus.filter((voucher) => voucher["code"].includes(this.state.search))
 
-		filtered.sort(function(a, b){return b.end - a.end });
+		filterByCode.sort(function(a, b){return b.end - a.end });
 		const actualPage = this.state.actualPage * PAGE_SIZE
-		const totalPages = parseInt(filtered.length / PAGE_SIZE) + 1
-		const showingPage = filtered.slice(actualPage, actualPage + PAGE_SIZE)
+		const totalPages = parseInt(filterByCode.length / PAGE_SIZE) + 1
+		const showingPage = filterByCode.slice(actualPage, actualPage + PAGE_SIZE)
 
 		return <div className='table-container'>
 			<div className='actions-container'>
 				<div >
-					<label>Search by code:</label>
+					<label for='search'>Search by code:</label>
 					<input 
+						id="search"
 						type='search'
 						value={this.state.search}
 						onChange={this.onChangeSearch}/>
+				</div>
+				<div>
+					<label for="filter">Show: </label>
+					<select id='filter' value="" onChange={this.onChangeFilter}>
+						<option value="">All</option>
+						<option value="active">Active</option>
+						<option value="expired">Expired</option>
+					</select>
 				</div>
 			</div>
 			<Table page={showingPage} selectVoucher={this.selectVoucher}/>
@@ -77,9 +93,9 @@ class VoucherTable extends Component {
 					<button onClick={this.toPrevPage}>{`<`}</button>
 					<span>
 						{` ${actualPage + 1} to ${(
-							actualPage + PAGE_SIZE > filtered.length
-							? filtered.length 
-							: actualPage + PAGE_SIZE)} of ${filtered.length} `}</span>
+							actualPage + PAGE_SIZE > filterByCode.length
+							? filterByCode.length 
+							: actualPage + PAGE_SIZE)} of ${filterByCode.length} `}</span>
 					<button onClick={() => this.toNextPage(totalPages)}>{`>`}</button>
 					<button onClick={() => this.toLastPage(totalPages)}>{`>>`}</button>
 				</div>
