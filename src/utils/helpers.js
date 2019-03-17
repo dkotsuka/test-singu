@@ -1,5 +1,5 @@
-export function formatDate(string) {
-	const date = string.split("T")[0]
+export function formatDate(arg) {
+	const date = arg.toISOString().split("T")[0]
 	const year = date.split("-")[0]
 	const month = date.split("-")[1]
 	const day = date.split("-")[2]

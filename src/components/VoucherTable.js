@@ -8,42 +8,42 @@ class VoucherTable extends Component {
 	state = {
 		selected: "",
 		search: "",
+		filterBy: "",
 		actualPage: 0
 	}
-
-// --- select item in list using the radio button
+// --- set item id using the radio button
 	selectVoucher = (e) => {
 		const id = e.target.value
 		this.setState({ selected: id })
 	}
 
-// --- search by code functions
+// --- set the text filter for code search
 	onChangeSearch = (e) => {
 		const value = e.target.value
-		this.setState({ search: value })
+		this.setState({ search: value, selected: "" })
 	}
 
 // --- page navigation functions
 	toFirstPage = () => {
-		this.setState({ actualPage: 0 })
+		this.setState({ actualPage: 0, selected: "" })
 	}
 
 	toPrevPage = () => {
 		if(this.state.actualPage > 0) {
 			const page = this.state.actualPage - 1
-			this.setState({ actualPage: page })
+			this.setState({ actualPage: page, selected: "" })
 		}
 	}
 
 	toNextPage = (total) => {
 		if(this.state.actualPage < total) {
 			const page = this.state.actualPage + 1
-			this.setState({ actualPage: page })
+			this.setState({ actualPage: page, selected: "" })
 		}
 	}
 
 	toLastPage = (total) => {
-		this.setState({ actualPage: total - 1 })
+		this.setState({ actualPage: total - 1, selected: "" })
 	}
 
 	render(){
@@ -51,10 +51,10 @@ class VoucherTable extends Component {
 		const vouchers = this.props.vouchers
 		const filtered = vouchers.filter((voucher) => voucher["code"].includes(this.state.search))
 
-		filtered.sort(function(a, b){return new Date(b.end) - new Date(a.end)});
+		filtered.sort(function(a, b){return b.end - a.end });
 		const actualPage = this.state.actualPage * PAGE_SIZE
-		const total = parseInt(filtered.length / PAGE_SIZE) + 1
-		const page = filtered.slice(actualPage, actualPage + PAGE_SIZE)
+		const totalPages = parseInt(filtered.length / PAGE_SIZE) + 1
+		const showingPage = filtered.slice(actualPage, actualPage + PAGE_SIZE)
 
 		return <div className='table-container'>
 			<div className='actions-container'>
@@ -66,11 +66,11 @@ class VoucherTable extends Component {
 						onChange={this.onChangeSearch}/>
 				</div>
 			</div>
-			<Table page={page} selectVoucher={this.selectVoucher}/>
+			<Table page={showingPage} selectVoucher={this.selectVoucher}/>
 			<div className="table-footer">
 				<div>
-					<button>edit voucher</button>
-					<button>disable voucher</button>
+					<button disabled={!this.state.selected}>edit voucher</button>
+					<button disabled={!this.state.selected}>disable voucher</button>
 				</div>
 				<div >
 					<button onClick={this.toFirstPage}>{`<<`}</button>
@@ -80,8 +80,8 @@ class VoucherTable extends Component {
 							actualPage + PAGE_SIZE > filtered.length
 							? filtered.length 
 							: actualPage + PAGE_SIZE)} of ${filtered.length} `}</span>
-					<button onClick={() => this.toNextPage(total)}>{`>`}</button>
-					<button onClick={() => this.toLastPage(total)}>{`>>`}</button>
+					<button onClick={() => this.toNextPage(totalPages)}>{`>`}</button>
+					<button onClick={() => this.toLastPage(totalPages)}>{`>>`}</button>
 				</div>
 			</div>
 			

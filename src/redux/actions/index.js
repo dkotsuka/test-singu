@@ -1,12 +1,12 @@
 import { getAll } from '../../utils/VoucherAPI'
 
 export const CREATE_VOUCHER = 'CREATE_VOUCHER'
-export const LOAD_PAGE = 'LOAD_PAGE'
+export const LOAD_DATA = 'LOAD_DATA'
 
 
 function loadPage(list) {
 	return {
-		type: LOAD_PAGE,
+		type: LOAD_DATA,
 		list
 	}
 }

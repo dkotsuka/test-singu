@@ -14,7 +14,6 @@ export default function Table(props) {
 			</thead>
 			<tbody>
 			{page.map((voucher) => {
-				const end = new Date(voucher.end)
 				const today = Date.now();
 				return (
 					<tr key={voucher._id}>
@@ -32,7 +31,7 @@ export default function Table(props) {
 						<td>{voucher.value}</td>
 						<td>{voucher.type}</td>
 						<td>{formatList(voucher.services)}</td>
-						<td>{(end.getTime() > today) ? "Active" : "Expired" }</td>
+						<td>{voucher.status}</td>
 					</tr>
 				)
 			})}
