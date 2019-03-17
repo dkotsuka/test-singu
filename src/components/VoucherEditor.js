@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { createVoucher } from '../utils/VoucherAPI'
 
 class VoucherEditor extends Component {
 	state = {
@@ -14,14 +15,35 @@ class VoucherEditor extends Component {
 	}
 	handleSubmit = event => {
 		event.preventDefault()
+
+		console.log(this.state)
 		const message = this.validateSubmit()
 
 		if(message.length > 0){
 			alert(message)
 
 		} else {
-			console.log(this.state)
+			const voucher = this.makeVoucherObject()
+			createVoucher(voucher)
 		}
+	}
+
+	makeVoucherObject(){
+		const {campaign, code, start, end, value, type, maxTimes, timesByUser, services} = this.state
+		const startDate = new Date(start)
+		const endDate = new Date(end)
+		const voucher = {
+			campaign,
+			code,
+			start: startDate.toISOString(),
+			end: endDate,
+			value,
+			type,
+			maxTimes,
+			timesByUser,
+			services
+		}
+		return voucher
 	}
 
 	validateSubmit(){
