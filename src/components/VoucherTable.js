@@ -1,41 +1,90 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Table from './Table'
+
+const PAGE_SIZE = 15
 
 class VoucherTable extends Component {
+	state = {
+		selected: "",
+		search: "",
+		actualPage: 0
+	}
 
-	formatDate(string) {
-		const date = string.split("T")[0]
-		const year = date.split("-")[0]
-		const month = date.split("-")[1]
-		const day = date.split("-")[2]
+// --- select item in list using the radio button
+	selectVoucher = (e) => {
+		const id = e.target.value
+		this.setState({ selected: id })
+	}
 
-		return `${day}/${month}/${year}`
+// --- search by code functions
+	onChangeSearch = (e) => {
+		const value = e.target.value
+		this.setState({ search: value })
+	}
+
+// --- page navigation functions
+	toFirstPage = () => {
+		this.setState({ actualPage: 0 })
+	}
+
+	toPrevPage = () => {
+		if(this.state.actualPage > 0) {
+			const page = this.state.actualPage - 1
+			this.setState({ actualPage: page })
+		}
+	}
+
+	toNextPage = (total) => {
+		if(this.state.actualPage < total) {
+			const page = this.state.actualPage + 1
+			this.setState({ actualPage: page })
+		}
+	}
+
+	toLastPage = (total) => {
+		this.setState({ actualPage: total - 1 })
 	}
 
 	render(){
-		console.log(this.props)
-		const headers = ['campaign', 'code', 'start', 'end', 'value', 'type']
+		
 		const vouchers = this.props.vouchers
+		const filtered = vouchers.filter((voucher) => voucher["code"].includes(this.state.search))
+
+		filtered.sort(function(a, b){return new Date(b.end) - new Date(a.end)});
+		const actualPage = this.state.actualPage * PAGE_SIZE
+		const total = parseInt(filtered.length / PAGE_SIZE) + 1
+		const page = filtered.slice(actualPage, actualPage + PAGE_SIZE)
+
 		return <div className='table-container'>
-			<table>
-				<thead>
-					<tr>
-						{ headers.map((h) => <th key={h}>{h}</th> ) }
-					</tr>
-				</thead>
-				{vouchers.map((voucher) => {
-					return (
-						<tr>
-							<td>{voucher.campaign}</td>
-							<td>{voucher.code}</td>
-							<td>{this.formatDate(voucher.start)}</td>
-							<td>{this.formatDate(voucher.end)}</td>
-							<td>{voucher.value}</td>
-							<td>{voucher.type}</td>
-						</tr>
-					)
-				})}
-			</table>
+			<div className='actions-container'>
+				<div >
+					<label>Search by code:</label>
+					<input 
+						type='search'
+						value={this.state.search}
+						onChange={this.onChangeSearch}/>
+				</div>
+			</div>
+			<Table page={page} selectVoucher={this.selectVoucher}/>
+			<div className="table-footer">
+				<div>
+					<button>edit voucher</button>
+					<button>disable voucher</button>
+				</div>
+				<div >
+					<button onClick={this.toFirstPage}>{`<<`}</button>
+					<button onClick={this.toPrevPage}>{`<`}</button>
+					<span>
+						{` ${actualPage + 1} to ${(
+							actualPage + PAGE_SIZE > filtered.length
+							? filtered.length 
+							: actualPage + PAGE_SIZE)} of ${filtered.length} `}</span>
+					<button onClick={() => this.toNextPage(total)}>{`>`}</button>
+					<button onClick={() => this.toLastPage(total)}>{`>>`}</button>
+				</div>
+			</div>
+			
 		</div>
 	}
 }

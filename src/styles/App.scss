@@ -1,114 +1,152 @@
-#root, .App {
-  height: 100%;
+#root,
+.App {
+    height: 100%;
 }
+
 .editor-container {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 
-  form {
-    margin: 15px;
-    padding: 10px 20px;
-    border-radius: 2px;
-    background-color: rgba(250, 250, 250, 0.8);
+    form {
+        margin: 15px;
+        padding: 10px 20px;
+        border-radius: 2px;
+        background-color: rgba(250, 250, 250, 0.8);
 
-    h2 {
-      font-size: 1.8rem;
-      margin: 10px 5px;
+        h2 {
+            font-size: 1.8rem;
+            margin: 10px 5px;
+        }
+
+        .row-container {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .input-container {
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+
+            input {
+                height: 32px;
+                line-height: 32px;
+                font-size: 1.2rem;
+            }
+
+            .checkbox-container {
+                display: flex;
+                justify-content: space-between;
+                border: 1px solid rgba(0, 0, 0, 0.5);
+                margin: 5px 0;
+                padding: 0 15px 0 10px;
+
+                label {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    span {
+                        height: 32px;
+                        line-height: 32px;
+                    }
+                }
+            }
+        }
+
+        .number.input-container {
+            input {
+                text-align: right;
+            }
+        }
+
+        .select-container {
+            display: flex;
+            flex-direction: column;
+            margin: 5px;
+
+            select {
+                height: 38px;
+                line-height: 32px;
+                font-size: 1rem;
+            }
+        }
+
+        .value-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+
+            button {
+                margin: 5px;
+                height: 32px;
+                width: 200px;
+                text-transform: uppercase;
+            }
+        }
+    }
+}
+
+.table-container {
+    height: 100%;
+    padding: 15px;
+
+    table {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.2);
+
+        tr:hover {
+            td {
+                background-color: rgba(255, 255, 255, 0.7);
+            }
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+        }
+
+        td {
+            background-color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.5rem;
+        }
     }
 
-    .row-container {
-      display: flex;
-      align-items: flex-end;
+    button {
+        text-transform: uppercase;
+        margin-left: 5px;
+        height: 30px;
     }
 
-    .input-container{
-      margin: 5px;
-      display: flex;
-      flex-direction: column;
-
-      input {
-        height: 32px;
-        line-height: 32px;
-        font-size: 1.2rem;
-      }
-
-      .checkbox-container {
+    .actions-container {
         display: flex;
         justify-content: space-between;
-        border: 1px solid   rgba(0, 0, 0, 0.5);
-        margin: 5px 0;
-        padding: 0 15px 0 10px;
-        label {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          span {
-            height: 32px;
-            line-height: 32px;
-          }
-        }
-      }
-    }
-    .number.input-container {
-      input {
-        text-align: right;
-      }
-    }
-
-    .select-container {
-      display: flex;
-      flex-direction: column;
-      margin: 5px;
-
-      select {
-        height: 38px;
-        line-height: 32px;
-        font-size: 1rem;
-      }
-    }
-
-    .value-container {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: flex-end;
-      button {
-        margin: 5px;
-        height: 32px;
-        width: 200px;
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 15px 15px 5px 15px;
+        font-size: 0.8rem;
         text-transform: uppercase;
-      }
-    }
-  }
-}
 
-.table-container{
-  height: 100%;
-  padding: 15px;
-
-  table {
-    width: 100%;
-    background-color: rgba(255,255,255,0.2);
-
-    tr:hover {
-      td {
-        background-color: rgba(255,255,255,0.7);
-      }
+        label {
+            margin-right: 5px;
+        }
+        input {
+          height: 30px;
+          font-size: 16px;
+        }
     }
 
-    th {
-      background-color: rgba(255,255,255,0.5);
-      text-transform: uppercase;
+    .table-footer {
+        display: flex;
+        justify-content: space-between;
+        text-align: right;
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 10px;
     }
-
-    td {
-      background-color: rgba(255,255,255,0.5);
-      text-align: center;
-      font-size: 0.9rem;
-    }
-  }
 }
