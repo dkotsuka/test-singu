@@ -60,7 +60,7 @@ class VoucherTable extends Component {
 
 		filterByCode.sort(function(a, b){return b.end - a.end });
 		const actualPage = this.state.actualPage * PAGE_SIZE
-		const totalPages = parseInt(filterByCode.length / PAGE_SIZE) + 1
+		const totalPages = parseInt(filterByCode.length / PAGE_SIZE)
 		const showingPage = filterByCode.slice(actualPage, actualPage + PAGE_SIZE)
 
 		return <div className='table-container'>
@@ -75,7 +75,10 @@ class VoucherTable extends Component {
 				</div>
 				<div>
 					<label for="filter">Show: </label>
-					<select id='filter' value="" onChange={this.onChangeFilter}>
+					<select 
+						id='filter' 
+						value={this.state.filterBy} 
+						onChange={this.onChangeFilter}>
 						<option value="">All</option>
 						<option value="active">Active</option>
 						<option value="expired">Expired</option>
