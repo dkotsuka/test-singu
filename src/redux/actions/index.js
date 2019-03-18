@@ -23,17 +23,3 @@ export function handleInitialData() {
 		})
 	}
 }
-
-
-// export function handleInitialData() {
-// 	return (dispatch) => {
-// 		dispatch(showLoading())
-// 		return getInitialData()
-// 			.then(({tweets, users}) => {
-// 				dispatch(receiveUsers(users))
-// 				dispatch(receiveTweets(tweets))
-// 				dispatch(setAuthedUser(AUTHED_USER))
-// 				dispatch(hideLoading())
-// 			})
-// 	}
-// }

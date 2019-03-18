@@ -66,7 +66,7 @@ class VoucherTable extends Component {
 		return <div className='table-container'>
 			<div className='actions-container'>
 				<div >
-					<label for='search'>Search by code:</label>
+					<label htmlFor='search'>Search by code:</label>
 					<input 
 						id="search"
 						type='search'
@@ -74,7 +74,7 @@ class VoucherTable extends Component {
 						onChange={this.onChangeSearch}/>
 				</div>
 				<div>
-					<label for="filter">Show: </label>
+					<label htmlFor="filter">Show: </label>
 					<select 
 						id='filter' 
 						value={this.state.filterBy} 
