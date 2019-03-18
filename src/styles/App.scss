@@ -3,6 +3,32 @@
     height: 100%;
 }
 
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba( 0, 0, 0, 0.8);
+    color: rgb(255,255,255);
+
+    h1 {
+        margin: 0 15px;
+        line-height: 50px;
+    }
+
+    ul {
+        display: flex;
+        list-style: none;
+
+        li {
+            margin-right: 40px;
+        }
+    }
+
+    a {
+        color: rgb(255,255,255);
+        text-decoration: none;
+    }
+}
+
 .editor-container {
     display: flex;
     justify-content: center;
