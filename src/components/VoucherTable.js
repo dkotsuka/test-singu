@@ -49,7 +49,7 @@ class VoucherTable extends Component {
 	}
 
 	toLastPage = (total) => {
-		this.setState({ actualPage: total - 1, selected: "" })
+		this.setState({ actualPage: total, selected: "" })
 	}
 
 	render(){

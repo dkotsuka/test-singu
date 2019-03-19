@@ -1,5 +1,8 @@
 import React, {Component} from 'react'
 import { createVoucher } from '../utils/VoucherAPI'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { addVoucher } from '../redux/actions'
 
 class VoucherEditor extends Component {
 	state = {
@@ -15,8 +18,6 @@ class VoucherEditor extends Component {
 	}
 	handleSubmit = event => {
 		event.preventDefault()
-
-		console.log(this.state)
 		const message = this.validateSubmit()
 
 		if(message.length > 0){
@@ -25,6 +26,14 @@ class VoucherEditor extends Component {
 		} else {
 			const voucher = this.makeVoucherObject()
 			createVoucher(voucher)
+			.then((res) => {
+				if(res.status == 200){
+					this.props.dispatch(addVoucher(res.data[0]))
+					this.props.history.push('/')
+				} else {
+					alert("Error: voucher didn't sent.")
+				}
+			})
 		}
 	}
 
@@ -254,4 +263,4 @@ class VoucherEditor extends Component {
 	}
 }
 
-export default VoucherEditor
+export default withRouter(connect()(VoucherEditor))

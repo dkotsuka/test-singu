@@ -1,8 +1,14 @@
 import { getAll } from '../../utils/VoucherAPI'
 
-export const CREATE_VOUCHER = 'CREATE_VOUCHER'
+export const ADD_VOUCHER = 'ADD_VOUCHER'
 export const LOAD_DATA = 'LOAD_DATA'
 
+export function addVoucher(voucher) {
+	return {
+		type: ADD_VOUCHER,
+		voucher
+	}
+}
 
 function loadPage(list) {
 	return {

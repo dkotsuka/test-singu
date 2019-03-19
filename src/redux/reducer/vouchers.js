@@ -1,6 +1,6 @@
-import { CREATE_VOUCHER, LOAD_DATA } from '../actions'
+import { ADD_VOUCHER, LOAD_DATA } from '../actions'
 
-export default function vouchers(state={}, action) {
+export default function vouchers(state=[], action) {
 	switch (action.type) {
 
 		case LOAD_DATA:
@@ -17,6 +17,17 @@ export default function vouchers(state={}, action) {
 			}
 
 			return list
+		case ADD_VOUCHER:
+			const voucher = action.voucher
+			voucher.start = new Date(voucher.start)
+			voucher.end = new Date(voucher.end)
+			if (voucher.end.getTime() < today) {
+				voucher.status = "expired"
+			} else {
+				voucher.status = "active"
+			}
+			return [...state, voucher]
+
 
 		default:
 			return state
