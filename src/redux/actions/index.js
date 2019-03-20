@@ -2,11 +2,20 @@ import { getAll } from '../../utils/VoucherAPI'
 
 export const ADD_VOUCHER = 'ADD_VOUCHER'
 export const LOAD_DATA = 'LOAD_DATA'
+export const DISABLE_VOUCHER = 'DISABLE_VOUCHER'
 
 export function addVoucher(voucher) {
 	return {
 		type: ADD_VOUCHER,
 		voucher
+	}
+}
+
+export function disableOneVoucher(id, user) {
+	return {
+		type: DISABLE_VOUCHER,
+		id,
+		user
 	}
 }
 

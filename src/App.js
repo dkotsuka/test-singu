@@ -19,6 +19,7 @@ class App extends Component {
 					<TopBar />
 					<Route path='/' exact component={VoucherTable} />
                   	<Route path='/new' exact component={VoucherEditor} />
+                  	<Route path='/edit/:id' exact component={VoucherEditor} />
 				</div>
 			</Router>
 		);

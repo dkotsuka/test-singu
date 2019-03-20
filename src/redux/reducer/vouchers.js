@@ -1,4 +1,4 @@
-import { ADD_VOUCHER, LOAD_DATA } from '../actions'
+import { ADD_VOUCHER, LOAD_DATA, DISABLE_VOUCHER } from '../actions'
 
 export default function vouchers(state=[], action) {
 	switch (action.type) {
@@ -9,10 +9,14 @@ export default function vouchers(state=[], action) {
 			for (let i in list) {
 				list[i].start = new Date(list[i].start)
 				list[i].end = new Date(list[i].end)
-				if (list[i].end.getTime() < today) {
-					list[i].status = "expired"
+				if (list[i].disabled){
+					list[i].status = "disabled"
 				} else {
-					list[i].status = "active"
+					if (list[i].end.getTime() < today) {
+						list[i].status = "expired"
+					} else {
+						list[i].status = "active"
+					}
 				}
 			}
 
@@ -28,6 +32,20 @@ export default function vouchers(state=[], action) {
 			}
 			return [...state, voucher]
 
+		case DISABLE_VOUCHER:
+			const {id, user} = action
+			const prevState = [...state]
+			const newState = []
+			prevState.map((voucher) => {
+				if(voucher._id === id) {
+					voucher.disabled = true
+					voucher.disabledBy = user
+					voucher.status = 'disabled'
+				}
+				newState.push(voucher)
+			})
+			
+			return newState
 
 		default:
 			return state

@@ -3,9 +3,11 @@ import { createVoucher } from '../utils/VoucherAPI'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { addVoucher } from '../redux/actions'
+import { formatDate } from '../utils/helpers'
 
 class VoucherEditor extends Component {
 	state = {
+		editmode: false,
 		campaign: "",
 		code: "",
 		start: "",
@@ -16,6 +18,36 @@ class VoucherEditor extends Component {
 		timesByUser: 0,
 		services: []
 	}
+	componentDidMount() {
+		const { voucher } = this.props
+		
+		if(voucher) {
+			const { campaign, 
+				code, 
+				value, 
+				type, 
+				maxTimes, 
+				timesByUser, 
+				services } = voucher
+
+			const start = new Date(voucher.start)
+			const end = new Date(voucher.end)
+				console.log(start)
+			this.setState({
+				editmode: true,
+				campaign, 
+				code, 
+				start: `${start.getFullYear()}-${start.getMonth()}-${start.getDay()}`,
+				end, 
+				value, 
+				type, 
+				maxTimes, 
+				timesByUser, 
+				services
+			})
+		}
+	}
+
 	handleSubmit = event => {
 		event.preventDefault()
 		const message = this.validateSubmit()
@@ -263,4 +295,14 @@ class VoucherEditor extends Component {
 	}
 }
 
-export default withRouter(connect()(VoucherEditor))
+function mapStateToProps({vouchers}, props) {
+	let voucher = undefined
+	const path = props.location.pathname
+		if(path.includes("/edit/")) {
+			const id = path.replace("/edit/", "")
+			voucher = (vouchers.filter((v) => v._id === id))[0]
+		}
+	return { voucher }
+}
+
+export default withRouter(connect(mapStateToProps)(VoucherEditor))

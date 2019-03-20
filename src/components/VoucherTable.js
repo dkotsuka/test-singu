@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Table from './Table'
+import { withRouter } from 'react-router-dom'
+import { disableVoucher } from '../utils/VoucherAPI'
+import { disableOneVoucher } from '../redux/actions'
 
 const PAGE_SIZE = 15
+const user = 'user1234'
 
 class VoucherTable extends Component {
 	state = {
@@ -52,11 +56,23 @@ class VoucherTable extends Component {
 		this.setState({ actualPage: total, selected: "" })
 	}
 
+	editVoucher = () => {
+		const id = this.state.selected
+		this.props.history.push(`/edit/${id}`)
+	}
+
+	disableVoucher = () => {
+		const id = this.state.selected
+		disableVoucher(id, user).then((res) => {
+			this.props.dispatch(disableOneVoucher(id,user))
+		})
+	}
+
 	render(){
 		
 		const vouchers = this.props.vouchers
-		const filterByStatus = vouchers.filter((voucher) => voucher["status"].includes(this.state.filterBy))
-		const filterByCode = filterByStatus.filter((voucher) => voucher["code"].includes(this.state.search))
+		const filterByStatus = vouchers.filter((voucher) => voucher.status.includes(this.state.filterBy))
+		const filterByCode = filterByStatus.filter((voucher) => voucher.code.includes(this.state.search))
 
 		filterByCode.sort(function(a, b){return b.end - a.end });
 		const actualPage = this.state.actualPage * PAGE_SIZE
@@ -82,14 +98,23 @@ class VoucherTable extends Component {
 						<option value="">All</option>
 						<option value="active">Active</option>
 						<option value="expired">Expired</option>
+						<option value="disabled">Disabled</option>
 					</select>
 				</div>
 			</div>
 			<Table page={showingPage} selectVoucher={this.selectVoucher}/>
 			<div className="table-footer">
 				<div>
-					<button disabled={!this.state.selected}>edit voucher</button>
-					<button disabled={!this.state.selected}>disable voucher</button>
+					<button 
+						onClick={this.editVoucher}
+						disabled={!this.state.selected}>
+						edit voucher
+					</button>
+					<button 
+						onClick={this.disableVoucher}
+						disabled={!this.state.selected}>
+						disable voucher
+					</button>
 				</div>
 				<div >
 					<button onClick={this.toFirstPage}>{`<<`}</button>
@@ -116,4 +141,4 @@ function mapStateToProps({vouchers}) {
 	return {vouchers: list}
 }
 
-export default connect(mapStateToProps)(VoucherTable)
+export default withRouter(connect(mapStateToProps)(VoucherTable))

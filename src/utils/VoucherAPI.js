@@ -10,6 +10,9 @@ export function createVoucher(voucher) {
 }
 
 export function editVoucher(voucher) {
-	return axios.put("http://localhost:3001/api/post", voucher)
+	return axios.put("http://localhost:3001/api/put", voucher)
 }
 
+export function disableVoucher(id, user) {
+	return axios.put("http://localhost:3001/api/disable", {id, user})
+}
