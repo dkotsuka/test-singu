@@ -5,6 +5,10 @@ export function getAll(argument) {
 	return axios.get("http://localhost:3001/api/getAll")
 }
 
+export function getOne(id) {
+	return axios.get("http://localhost:3001/api/getOne", {id})
+}
+
 export function createVoucher(voucher) {
 	return axios.post("http://localhost:3001/api/post", voucher)
 }

@@ -1,13 +1,15 @@
 import React, {Component} from 'react'
-import { createVoucher } from '../utils/VoucherAPI'
+import { createVoucher, editVoucher } from '../utils/VoucherAPI'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { addVoucher } from '../redux/actions'
+import { addVoucher, editOneVoucher } from '../redux/actions'
 import { formatDate } from '../utils/helpers'
 
 class VoucherEditor extends Component {
 	state = {
 		editmode: false,
+		disabledmode:false,
+		disabledBy: "",
 		campaign: "",
 		code: "",
 		start: "",
@@ -20,32 +22,34 @@ class VoucherEditor extends Component {
 	}
 	componentDidMount() {
 		const { voucher } = this.props
+		const path = this.props.location.pathname
+		const id = path.replace("/edit/", "")
+
+		if(path.includes("/edit/")){
+			this.setState({ editmode: true })
+		}
+		
+		if(this.state.editmode) {
+			if(voucher.disabled) {
+				this.setState({disabledmode: true, disabledBy: voucher.disabledBy})
+			}
+		}
 		
 		if(voucher) {
-			const { campaign, 
-				code, 
-				value, 
-				type, 
-				maxTimes, 
-				timesByUser, 
-				services } = voucher
-
-			const start = new Date(voucher.start)
-			const end = new Date(voucher.end)
-				console.log(start)
-			this.setState({
-				editmode: true,
-				campaign, 
-				code, 
-				start: `${start.getFullYear()}-${start.getMonth()}-${start.getDay()}`,
-				end, 
-				value, 
-				type, 
-				maxTimes, 
-				timesByUser, 
-				services
-			})
+			this.setInitialState(voucher)
 		}
+	}
+
+	setInitialState(voucher){
+		const { campaign, code, value, type, maxTimes, timesByUser, 
+				services } = voucher
+			const start = formatDate(voucher.start).split("/")
+			const end = formatDate(voucher.end).split("/")
+			this.setState({
+				campaign, code, value, type, maxTimes, timesByUser, services,
+				start: `${start[2]}-${start[1]}-${start[0]}`,
+				end: `${end[2]}-${end[1]}-${end[0]}`
+			})
 	}
 
 	handleSubmit = event => {
@@ -57,15 +61,26 @@ class VoucherEditor extends Component {
 
 		} else {
 			const voucher = this.makeVoucherObject()
-			createVoucher(voucher)
-			.then((res) => {
-				if(res.status == 200){
-					this.props.dispatch(addVoucher(res.data[0]))
-					this.props.history.push('/')
-				} else {
-					alert("Error: voucher didn't sent.")
-				}
-			})
+			if(this.state.editmode) {
+				const id = this.props.location.pathname.replace("/edit/", "")
+				editVoucher({id, voucher}).then((res) => {
+					if(res.status == 200){
+						this.props.dispatch(editOneVoucher(id, voucher))
+						this.props.history.push('/')
+					}
+				})
+			} else {
+				createVoucher(voucher)
+				.then((res) => {
+					if(res.status == 200){
+						this.props.dispatch(addVoucher(res.data[0]))
+						this.props.history.push('/')
+					} else {
+						alert("Error: something was wrong when create voucher.")
+					}
+				})
+			}
+			
 		}
 	}
 
@@ -77,7 +92,7 @@ class VoucherEditor extends Component {
 			campaign,
 			code,
 			start: startDate.toISOString(),
-			end: endDate,
+			end: endDate.toISOString(),
 			value,
 			type,
 			maxTimes,
@@ -175,10 +190,12 @@ class VoucherEditor extends Component {
 	render(){
 		return <div className="editor-container">
 			<form onSubmit={e => this.handleSubmit(e)}>
-				<h2>Create New Voucher</h2>
+				<h2>{this.state.editmode ? "Edit Voucher" : "Create New Voucher"}</h2>
+				<p>{this.state.disabledmode && `Voucher disabled by ${this.state.disabledBy}` }</p>
 				<div className="input-container">
 					<span>Campaign name:</span>
 					<input 
+						disabled={this.state.disabledmode}
 						name="campaign" 
 						type="text" 
 						value={this.state.campaign} 
@@ -187,6 +204,7 @@ class VoucherEditor extends Component {
 				<div className="input-container">
 					<span>Promotinal Code:</span>
 					<input 
+						disabled={this.state.disabledmode}
 						name="code"
 						type="text"
 						value={this.state.code} 
@@ -196,6 +214,7 @@ class VoucherEditor extends Component {
 					<div className="number input-container">
 						<span>Start date:</span>
 						<input 
+							disabled={this.state.disabledmode}
 							name="start"
 							type="date"
 							value={this.state.start} 
@@ -204,6 +223,7 @@ class VoucherEditor extends Component {
 					<div className="number input-container">
 						<span>End date:</span>
 						<input 
+							disabled={this.state.disabledmode}
 							name="end"
 							type="date"
 							value={this.state.end} 
@@ -214,6 +234,7 @@ class VoucherEditor extends Component {
 					<div className="number input-container">
 						<span>Discount value:</span>
 						<input 
+							disabled={this.state.disabledmode}
 							name="value"
 							type="number"
 							value={this.state.value} 
@@ -222,6 +243,7 @@ class VoucherEditor extends Component {
 					</div>
 					<div className="select-container">
 						<select 
+							disabled={this.state.disabledmode}
 							name="type"
 							value={this.state.type} 
 							onChange={this.onChangeTextInput}>
@@ -235,6 +257,7 @@ class VoucherEditor extends Component {
 					<div className="checkbox-container">
 						<label>
 							<input 
+								disabled={this.state.disabledmode}
 								name="depilation"
 								type="checkbox"
 								checked={this.serviceIsChecked("depilation")}
@@ -243,6 +266,7 @@ class VoucherEditor extends Component {
 						</label>
 						<label>
 							<input
+								disabled={this.state.disabledmode}
 								name="hair"
 								type="checkbox"
 								checked={this.serviceIsChecked("hair")}
@@ -251,6 +275,7 @@ class VoucherEditor extends Component {
 						</label>
 						<label>
 							<input 
+								disabled={this.state.disabledmode}
 								name="massage"
 								type="checkbox"
 								checked={this.serviceIsChecked("massage")}
@@ -259,6 +284,7 @@ class VoucherEditor extends Component {
 						</label>
 						<label>
 							<input 
+								disabled={this.state.disabledmode}
 								name="nails"
 								type="checkbox"
 								checked={this.serviceIsChecked("nails")}
@@ -271,6 +297,7 @@ class VoucherEditor extends Component {
 					<div className="number input-container">
 						<span>Max vouchers:</span>
 						<input 
+							disabled={this.state.disabledmode}
 							name="maxTimes"
 							type="number"
 							value={this.state.maxTimes} 
@@ -280,6 +307,7 @@ class VoucherEditor extends Component {
 					<div className="number input-container">
 						<span>Max per user:</span>
 						<input 
+							disabled={this.state.disabledmode}
 							name="timesByUser"
 							type="number"
 							value={this.state.timesByUser} 
@@ -288,7 +316,9 @@ class VoucherEditor extends Component {
 					</div>
 				</div>
 				<div className="button-container">
-					<button>Submit</button>
+					<button disabled={this.state.disabledmode}>
+						{this.state.editmode ? "Save" : "Create"}
+					</button>
 				</div>
 			</form>		
 		</div>
